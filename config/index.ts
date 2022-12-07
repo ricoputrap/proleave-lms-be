@@ -1,4 +1,5 @@
-import dotenv from "dotenv";
-dotenv.config({ path: './config/.env' });
+import startDbConnection from "./db"
 
-export const PORT = process.env.PORT;
+export const startConfiguration = async () => {
+  await startDbConnection();
+}

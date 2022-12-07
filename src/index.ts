@@ -1,5 +1,6 @@
 import express, { Express } from "express";
-import { PORT } from "../config";
+import { startConfiguration } from "../config";
+import { PORT } from "../config/env";
 import connectRoutes from "./utils/connectRoutes";
 
 const startServer = () => {
@@ -17,4 +18,6 @@ const startServer = () => {
   });
 }
 
-startServer();
+startConfiguration().then(() => {
+  startServer();
+})
