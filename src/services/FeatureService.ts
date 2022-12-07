@@ -27,6 +27,25 @@ class FeatureService {
       }
     }
   }
+
+  addNewFeature = async (name: string): Promise<ReturnType> => {
+    try {
+      const feature: IFeature = await this.repository.addNewFeature(name);
+
+      return {
+        success: true,
+        data: feature,
+        code: 200
+      }
+    }
+    catch (error: any) {
+      return {
+        success: false,
+        message: error,
+        code: 500
+      }
+    } 
+  }
 }
 
 export default FeatureService;

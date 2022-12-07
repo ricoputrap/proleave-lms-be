@@ -14,6 +14,18 @@ class FeatureRepository {
       throw message;
     }
   }
+
+  addNewFeature = async (name: string): Promise<IFeature> => {
+    try {
+      const feature: IFeature = await FeatureModel.create({ name });
+      return feature;
+    }
+    catch (error: any) {
+      const message = (error as Error).message;
+      console.error("addNewFeature - message:", message);
+      throw message;
+    }
+  }
 }
 
 export default FeatureRepository;
