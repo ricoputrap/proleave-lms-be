@@ -1,5 +1,6 @@
 import FeatureModel from "../models/FeatureModel";
 import { IFeature } from "../types/models.types";
+import { stringToHash } from "../utils/hashing";
 
 class FeatureRepository {
   
@@ -17,7 +18,8 @@ class FeatureRepository {
 
   addNewFeature = async (name: string): Promise<IFeature> => {
     try {
-      const feature: IFeature = await FeatureModel.create({ name });
+      const _id: number = stringToHash(name);
+      const feature: IFeature = await FeatureModel.create({ _id, name });
       return feature;
     }
     catch (error: any) {
