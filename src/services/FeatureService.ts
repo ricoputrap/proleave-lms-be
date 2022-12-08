@@ -46,6 +46,33 @@ class FeatureService {
       }
     } 
   }
+
+  editFeature = async (id: number, name: string): Promise<ReturnType> => {
+    try {
+      const updatedFeature: IFeature | null | undefined = await this.repository.editFeature(id, name);
+      
+      if (!updatedFeature) {
+        return {
+          success: false,
+          message: "Feature with id " + id + " doesn't exist",
+          code: 404
+        }
+      }
+
+      return {
+        success: true,
+        data: updatedFeature,
+        code: 200
+      }
+    }
+    catch (error: any) {
+      return {
+        success: false,
+        message: error,
+        code: 500
+      }
+    }
+  }
 }
 
 export default FeatureService;

@@ -28,6 +28,24 @@ class FeatureRepository {
       throw message;
     }
   }
+
+  editFeature = async (_id: number, name: string): Promise<IFeature | null | undefined> => {
+    try {
+      const filter = { _id };
+      const value = { name };
+      
+      const updatedFeature: IFeature | null = await FeatureModel.findOneAndUpdate(filter, value);
+      if (!!updatedFeature) updatedFeature.name = name;
+
+      return updatedFeature;
+      // return doc;
+    }
+    catch (error: any) {
+      const message = (error as Error).message;
+      console.error("editFeature - message:", message);
+      throw message;
+    }
+  }
 }
 
 export default FeatureRepository;
