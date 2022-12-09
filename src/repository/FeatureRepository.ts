@@ -1,4 +1,5 @@
 import FeatureModel from "../models/FeatureModel";
+import { FeatureFilterType } from "../types/api.types";
 import { IFeature } from "../types/models.types";
 import { stringToHash } from "../utils/hashing";
 
@@ -12,6 +13,18 @@ class FeatureRepository {
     catch (error: any) {
       const message = (error as Error).message;
       console.error("getAllFeatures - message:", message);
+      throw message;
+    }
+  }
+
+  getSingleFeature = async (filter: FeatureFilterType): Promise<IFeature | null> => {
+    try {
+      const feature: IFeature | null = await FeatureModel.findOne(filter);
+      return feature;
+    }
+    catch (error: any) {
+      const message = (error as Error).message;
+      console.error("getSingleFeature - message:", message);
       throw message;
     }
   }
@@ -38,7 +51,6 @@ class FeatureRepository {
       if (!!updatedFeature) updatedFeature.name = name;
 
       return updatedFeature;
-      // return doc;
     }
     catch (error: any) {
       const message = (error as Error).message;
