@@ -57,6 +57,9 @@ class FeatureService extends Service {
   editFeature = async (id: number, name: string): Promise<ReturnType> => {
     try {
       // validate if the updated name is already used by another feature
+      const duplicationCheck: ReturnType = await this._validateDuplication(name, id);
+      if (!duplicationCheck.success)
+        return duplicationCheck;
 
       const updatedFeature: IFeature | null | undefined = await this.repository.editFeature(id, name);
       
@@ -83,10 +86,18 @@ class FeatureService extends Service {
     }
   }
 
-  private async _validateDuplication(name: string, id: string = ""): Promise<ReturnType> {
+  /**
+   * Validate if a db record/document with the same name already exists
+   * @param name the name of the record/document (Feature object)
+   * @param exludedID id of a document that will be excluded in the validation process
+   * @returns an object of ReturnType
+   */
+  private async _validateDuplication(name: string, exludedID: number = -1): Promise<ReturnType> {
     try {
       const filter: any = { name };
-      if (!!id) filter._id = id;
+      if (exludedID !== -1) {
+        filter._id = { $ne: exludedID }
+      }
 
       let result: ReturnType = { success: true, code: 200 };
       const exists: boolean = await this.checkIfExist(
