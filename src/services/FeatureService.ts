@@ -91,7 +91,7 @@ class FeatureService extends Service {
       const res: DeleteReturnType = await this.repository.deleteFeature(id);
       
       // feature record/doc doesn't exist
-      if (!res.deleledCount || res.deleledCount == 0) {
+      if (!res.deletedCount || res.deletedCount == 0) {
         return {
           success: false,
           message:  `A feature with the name '${id}' doesn't exist.`,
