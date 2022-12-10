@@ -33,20 +33,9 @@ class FeatureService extends Service {
   addNewFeature = async (name: string): Promise<ReturnType> => {
     try {
       // validate duplication
-      const filter = { name };
-      const exists: boolean = await this.checkIfExist(
-        this.repository.getSingleFeature,
-        filter
-      );
-
-      if (exists) {
-        const message = `A feature with the name '${name}' already exists.`;
-        return {
-          success: false,
-          message,
-          code: 400
-        }  
-      }
+      const duplicationCheck: ReturnType = await this._validateDuplication(name);
+      if (!duplicationCheck.success)
+        return duplicationCheck;
 
       const feature: IFeature = await this.repository.addNewFeature(name);
 
@@ -84,6 +73,36 @@ class FeatureService extends Service {
         data: updatedFeature,
         code: 200
       }
+    }
+    catch (error: any) {
+      return {
+        success: false,
+        message: error,
+        code: 500
+      }
+    }
+  }
+
+  private async _validateDuplication(name: string, id: string = ""): Promise<ReturnType> {
+    try {
+      const filter: any = { name };
+      if (!!id) filter._id = id;
+
+      let result: ReturnType = { success: true, code: 200 };
+      const exists: boolean = await this.checkIfExist(
+        this.repository.getSingleFeature,
+        filter
+      );
+
+      // there is no duplication
+      if (!exists) return result;
+
+      result = {
+        success: false,
+        code: 400,
+        message:  `A feature with the name '${name}' already exists.`
+      }
+      return result;
     }
     catch (error: any) {
       return {
