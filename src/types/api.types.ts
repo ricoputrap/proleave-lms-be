@@ -12,7 +12,7 @@ export type FeatureFilterType = {
 
 export type DeleteReturnType = {
   acknowledged: boolean;
-  deleledCount?: number;
+  deletedCount?: number;
 }
 
 export type FGetSingleItem<T> = (filter: any) => Promise<T | null>;
