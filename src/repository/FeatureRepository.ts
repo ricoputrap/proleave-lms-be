@@ -1,5 +1,5 @@
 import FeatureModel from "../models/FeatureModel";
-import { FeatureFilterType } from "../types/api.types";
+import { DeleteReturnType, FeatureFilterType } from "../types/api.types";
 import { IFeature } from "../types/models.types";
 import { stringToHash } from "../utils/hashing";
 
@@ -55,6 +55,19 @@ class FeatureRepository {
     catch (error: any) {
       const message = (error as Error).message;
       console.error("editFeature - message:", message);
+      throw message;
+    }
+  }
+
+  deleteFeature = async (_id: number): Promise<DeleteReturnType> => {
+    try {
+      const filter = { _id };
+      const res: DeleteReturnType = await FeatureModel.deleteOne(filter);
+      return res;
+    }
+    catch (error: any) {
+      const message = (error as Error).message;
+      console.error("deleteFeature - message:", message);
       throw message;
     }
   }

@@ -61,6 +61,26 @@ const Feature = () => {
     return res.status(result.code).json(result);
   });
 
+  // DELETE FEATURE
+  router.delete("/:id", async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    // validate if the id is a number
+    const idNumber = parseInt(req.params.id);
+    if (isNaN(idNumber)) {
+      const message: string = id + " is not a number. The feature ID must be a number.";
+      const result: ReturnType = {
+        success: false,
+        message,
+        code: 400
+      }
+      return res.status(result.code).json(result);
+    }
+
+    const result = await service.deleteFeature(idNumber);
+    return res.status(result.code).json(result);
+  })
+
   return router;
 }
 

@@ -1,5 +1,5 @@
 import FeatureRepository from "../repository/FeatureRepository";
-import { ReturnType } from "../types/api.types";
+import { DeleteReturnType, ReturnType } from "../types/api.types";
 import { IFeature } from "../types/models.types";
 import Service from "./Service";
 
@@ -74,6 +74,33 @@ class FeatureService extends Service {
       return {
         success: true,
         data: updatedFeature,
+        code: 200
+      }
+    }
+    catch (error: any) {
+      return {
+        success: false,
+        message: error,
+        code: 500
+      }
+    }
+  }
+
+  deleteFeature = async (id: number): Promise<ReturnType> => {
+    try {
+      const res: DeleteReturnType = await this.repository.deleteFeature(id);
+      
+      // feature record/doc doesn't exist
+      if (!res.deleledCount || res.deleledCount == 0) {
+        return {
+          success: false,
+          message:  `A feature with the name '${id}' doesn't exist.`,
+          code: 404
+        }
+      }
+
+      return {
+        success: true,
         code: 200
       }
     }
