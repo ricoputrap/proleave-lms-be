@@ -1,6 +1,7 @@
 import FeatureRepository from "../repository/FeatureRepository";
 import { DeleteReturnType, ReturnType } from "../types/api.types";
 import { IFeature } from "../types/models.types";
+import { getBadRequestResponse, getInternalServerErrorResponse, getNotFoundResponse, getSuccessResponse } from "../utils/responseConstructor";
 import Service from "./Service";
 
 class FeatureService extends Service {
@@ -14,19 +15,11 @@ class FeatureService extends Service {
   getAllFeatures = async (): Promise<ReturnType> => {
     try {
       const features: IFeature[] = await this.repository.getAllFeatures();
-
-      return {
-        success: true,
-        data: features,
-        code: 200
-      }
+      const result: ReturnType = getSuccessResponse(features);
+      return result;
     }
     catch (error: any) {
-      return {
-        success: false,
-        message: error,
-        code: 500
-      }
+      return getInternalServerErrorResponse(error);
     }
   }
 
@@ -38,19 +31,11 @@ class FeatureService extends Service {
         return duplicationCheck;
 
       const feature: IFeature = await this.repository.addNewFeature(name);
-
-      return {
-        success: true,
-        data: feature,
-        code: 200
-      }
+      const result: ReturnType = getSuccessResponse(feature);
+      return result;
     }
     catch (error: any) {
-      return {
-        success: false,
-        message: error,
-        code: 500
-      }
+      return getInternalServerErrorResponse(error);
     } 
   }
 
@@ -64,25 +49,13 @@ class FeatureService extends Service {
       const updatedFeature: IFeature | null | undefined = await this.repository.editFeature(id, name);
       
       if (!updatedFeature) {
-        return {
-          success: false,
-          message: "Feature with id " + id + " doesn't exist",
-          code: 404
-        }
+        return getNotFoundResponse("Feature with id " + id + " doesn't exist");
       }
-
-      return {
-        success: true,
-        data: updatedFeature,
-        code: 200
-      }
+      
+      return getSuccessResponse(updatedFeature);
     }
     catch (error: any) {
-      return {
-        success: false,
-        message: error,
-        code: 500
-      }
+      return getInternalServerErrorResponse(error);
     }
   }
 
@@ -92,24 +65,15 @@ class FeatureService extends Service {
       
       // feature record/doc doesn't exist
       if (!res.deletedCount || res.deletedCount == 0) {
-        return {
-          success: false,
-          message:  `A feature with the name '${id}' doesn't exist.`,
-          code: 404
-        }
+        const errorMessage = `A feature with ID '${id}' doesn't exist.`;
+        const result: ReturnType = getNotFoundResponse(errorMessage);
+        return result;
       }
 
-      return {
-        success: true,
-        code: 200
-      }
+      return getSuccessResponse();
     }
     catch (error: any) {
-      return {
-        success: false,
-        message: error,
-        code: 500
-      }
+      return getInternalServerErrorResponse(error);
     }
   }
 
@@ -135,19 +99,11 @@ class FeatureService extends Service {
       // there is no duplication
       if (!exists) return result;
 
-      result = {
-        success: false,
-        code: 400,
-        message:  `A feature with the name '${name}' already exists.`
-      }
+      result = getBadRequestResponse(`A feature with the name '${name}' already exists.`);
       return result;
     }
     catch (error: any) {
-      return {
-        success: false,
-        message: error,
-        code: 500
-      }
+      return getInternalServerErrorResponse(error);
     }
   }
 }

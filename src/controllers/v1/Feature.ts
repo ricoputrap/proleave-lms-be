@@ -1,6 +1,8 @@
 import { Request, Response, Router } from "express";
 import FeatureService from "../../services/FeatureService";
 import { ReturnType } from "../../types/api.types";
+import { getBadRequestResponse } from "../../utils/responseConstructor";
+import { isNumeric } from "../../utils/typeChecker";
 
 const Feature = () => {
   const router = Router();
@@ -18,11 +20,7 @@ const Feature = () => {
 
     // validate required data
     if (!name) {
-      const result: ReturnType = {
-        success: false,
-        message: "The feature name is required!",
-        code: 400
-      }
+      const result: ReturnType = getBadRequestResponse("The feature name is required!");
       return res.status(result.code).json(result);
     }
 
@@ -36,27 +34,19 @@ const Feature = () => {
     const { name } = req.body;
 
     // validate if the id is a number
-    const idNumber = parseInt(req.params.id);
-    if (isNaN(idNumber)) {
+    if (!isNumeric(id)) {
       const message: string = id + " is not a number. The feature ID must be a number.";
-      const result: ReturnType = {
-        success: false,
-        message,
-        code: 400
-      }
+      const result: ReturnType = getBadRequestResponse(message);
       return res.status(result.code).json(result);
     }
 
     // validate required data
     if (!name) {
-      const result: ReturnType = {
-        success: false,
-        message: "The feature name is required!",
-        code: 400
-      }
+      const result: ReturnType = getBadRequestResponse("The feature name is required");
       return res.status(result.code).json(result);
     }
 
+    const idNumber = parseInt(req.params.id);
     const result = await service.editFeature(idNumber, name);
     return res.status(result.code).json(result);
   });
@@ -66,17 +56,13 @@ const Feature = () => {
     const { id } = req.params;
 
     // validate if the id is a number
-    const idNumber = parseInt(req.params.id);
-    if (isNaN(idNumber)) {
+    if (isNumeric(id)) {
       const message: string = id + " is not a number. The feature ID must be a number.";
-      const result: ReturnType = {
-        success: false,
-        message,
-        code: 400
-      }
+      const result: ReturnType = getBadRequestResponse(message);
       return res.status(result.code).json(result);
     }
 
+    const idNumber = parseInt(req.params.id);
     const result = await service.deleteFeature(idNumber);
     return res.status(result.code).json(result);
   })
