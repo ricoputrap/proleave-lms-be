@@ -15,6 +15,26 @@ class SubscriptionPlanRepository {
       throw message;
     }
   }
+
+  /**
+   * @todo add `features` as the last parameter
+   */
+  addNewSubscriptionPlan = async (name: string, featureIds: number[]): Promise<ISubscriptionPlan> => {
+    try {
+      const _id: number = stringToHash(name);
+      const plan: ISubscriptionPlan = await SubscriptionPlanModel.create({
+        _id,
+        name,
+        featureIds
+      });
+      return plan;
+    }
+    catch (error: any) {
+      const message = (error as Error).message;
+      console.error("addNewSubscriptionPlan - message:", message);
+      throw message;
+    }
+  }
 }
 
 export default SubscriptionPlanRepository;

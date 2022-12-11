@@ -22,6 +22,27 @@ class SubscriptionPlanService extends Service {
       return getInternalServerErrorResponse(error);
     }
   }
+
+  addNewSubscriptionPlan = async (name: string, featureIds: number[]): Promise<ReturnType> => {
+    try {
+      /** @TODO validate duplication by the name */
+      // validate duplication
+      // const duplicationCheck: ReturnType = await this._va(name);
+      // if (!duplicationCheck.success)
+      //   return duplicationCheck;
+
+      // get multiple feature by the IDs -> `features`
+      // -> validate if `features.length === featureIds.length`
+      // -> pass `features` as the last param in `addNewSubscriptionPlan`
+
+      const plan: ISubscriptionPlan = await this.repository.addNewSubscriptionPlan(name, featureIds);
+      const result: ReturnType = getSuccessResponse(plan);
+      return result;
+    }
+    catch (error: any) {
+      return getInternalServerErrorResponse(error);
+    }
+  }
 }
 
 export default SubscriptionPlanService;

@@ -5,6 +5,7 @@ import { FeatureSchema } from "./FeatureModel";
 const SubscriptionPlanSchema = new Schema<ISubscriptionPlan>({
   _id: { type: Number, required: true, unique: true },
   name: { type: String, required: true, unique: true },
+  featureIds: { type: [Number], required: true },
   features: { type: [FeatureSchema] }
 });
 
