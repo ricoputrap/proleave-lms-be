@@ -2,7 +2,7 @@ import { Request, Response, Router } from "express";
 import SubscriptionPlanService from "../../services/SubscriptionPlanService";
 import { ReturnType } from "../../types/api.types";
 import { getBadRequestResponse } from "../../utils/responseConstructor";
-import { isArrayNumeric } from "../../utils/typeChecker";
+import { isArrayNumeric, isUniqueNumbers } from "../../utils/typeChecker";
 
 const SubscriptionPlan = (): Router => {
   const router = Router();
@@ -24,9 +24,16 @@ const SubscriptionPlan = (): Router => {
       return res.status(result.code).json(result);
     }
 
-    /** validate if all feature IDs are numbers (numeric) */
+    // validate if all feature IDs are numbers (numeric)
     if (!isArrayNumeric(featureIds)) {
       const message = "There is at least one feature ID that is not a number.";
+      const result: ReturnType = getBadRequestResponse(message);
+      return res.status(result.code).json(result);
+    }
+
+    // validate if all IDs are unique
+    if (!isUniqueNumbers(featureIds)) {
+      const message = "There are duplicate IDs.";
       const result: ReturnType = getBadRequestResponse(message);
       return res.status(result.code).json(result);
     }

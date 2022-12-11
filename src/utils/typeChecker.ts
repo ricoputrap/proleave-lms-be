@@ -25,3 +25,15 @@ export const isArrayNumeric = (values: any[]): boolean => {
 
   return true;
 }
+
+/**
+ * Validate Unique Numbers
+ * ========================
+ * Check whether all elements in the array are unique.
+ * @param values elements that will be validated
+ * @returns `true` if all elements are unique, `false` otherwise
+ */
+export const isUniqueNumbers = (values: any[]): boolean => {
+  const numbers: number[] = values.map(val => parseInt(val));
+  return (new Set(numbers)).size === values.length;
+}
