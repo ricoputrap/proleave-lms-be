@@ -1,5 +1,5 @@
 import SubscriptionPlanModel from "../models/SubscriptionPlanModel";
-import { ISubscriptionPlan } from "../types/models.types";
+import { IFeature, ISubscriptionPlan } from "../types/models.types";
 import { stringToHash } from "../utils/hashing";
 
 class SubscriptionPlanRepository {
@@ -19,13 +19,14 @@ class SubscriptionPlanRepository {
   /**
    * @todo add `features` as the last parameter
    */
-  addNewSubscriptionPlan = async (name: string, featureIds: number[]): Promise<ISubscriptionPlan> => {
+  addNewSubscriptionPlan = async (name: string, featureIds: number[], features: IFeature[]): Promise<ISubscriptionPlan> => {
     try {
       const _id: number = stringToHash(name);
       const plan: ISubscriptionPlan = await SubscriptionPlanModel.create({
         _id,
         name,
-        featureIds
+        featureIds,
+        features
       });
       return plan;
     }
