@@ -16,9 +16,18 @@ class SubscriptionPlanRepository {
     }
   }
 
-  /**
-   * @todo add `features` as the last parameter
-   */
+  getSingleItem = async (filter: any): Promise<ISubscriptionPlan | null> => {
+    try {
+      const plan: ISubscriptionPlan | null = await SubscriptionPlanModel.findOne(filter);
+      return plan;
+    }
+    catch (error: any) {
+      const message = (error as Error).message;
+      console.error("getSingleItem - message:", message);
+      throw message;
+    }
+  }
+
   addNewSubscriptionPlan = async (name: string, featureIds: number[], features: IFeature[]): Promise<ISubscriptionPlan> => {
     try {
       const _id: number = stringToHash(name);
