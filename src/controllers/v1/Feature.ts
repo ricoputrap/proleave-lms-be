@@ -56,7 +56,7 @@ const Feature = () => {
     const { id } = req.params;
 
     // validate if the id is a number
-    if (isNumeric(id)) {
+    if (!isNumeric(id)) {
       const message: string = id + " is not a number. The feature ID must be a number.";
       const result: ReturnType = getBadRequestResponse(message);
       return res.status(result.code).json(result);
