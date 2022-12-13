@@ -45,6 +45,26 @@ class SubscriptionPlanRepository {
       throw message;
     }
   }
+
+  editSubscriptionPlan = async (_id: number, data: ISubscriptionPlan ): Promise<ISubscriptionPlan | null | undefined> => {
+    try {
+      const filter = { _id };
+
+      const updatedPlan: ISubscriptionPlan | null = await SubscriptionPlanModel.findOneAndUpdate(filter, data);
+      if (!!updatedPlan) {
+        if (!!data.name) updatedPlan.name = data.name;
+        if (!!data.featureIds) updatedPlan.featureIds = data.featureIds;
+        if (!!data.features) updatedPlan.features = data.features;
+      }
+
+      return updatedPlan;
+    }
+    catch (error: any) {
+      const message = (error as Error).message;
+      console.error("editSubscriptionPlan - message:", message);
+      throw message;
+    }
+  }
 }
 
 export default SubscriptionPlanRepository;

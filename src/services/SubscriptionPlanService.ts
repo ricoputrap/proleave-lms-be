@@ -2,7 +2,7 @@ import FeatureRepository from "../repository/FeatureRepository";
 import SubscriptionPlanRepository from "../repository/SubscriptionPlanRepository";
 import { ReturnType } from "../types/api.types";
 import { IFeature, ISubscriptionPlan } from "../types/models.types";
-import { getBadRequestResponse, getInternalServerErrorResponse, getSuccessResponse } from "../utils/responseConstructor";
+import { getBadRequestResponse, getInternalServerErrorResponse, getNotFoundResponse, getSuccessResponse } from "../utils/responseConstructor";
 import Service from "./Service";
 
 class SubscriptionPlanService extends Service {
@@ -58,6 +58,36 @@ class SubscriptionPlanService extends Service {
     }
   }
 
+  editSubscriptionPlan = async (id: number, data: ISubscriptionPlan): Promise<ReturnType> => {
+    try {
+      if (!!data.name) {
+        // validate if the updated name is already used by another subscription plan
+        const duplicationCheck: ReturnType = await this._validateDuplication(data.name, id);
+        if (!duplicationCheck.success)
+          return duplicationCheck;
+      }
+
+      if (!!data.featureIds) {
+        const features: IFeature[] = await this._getFeaturesByIds(data.featureIds);
+        if (features.length !== data.featureIds.length) {
+          return getBadRequestResponse("There is at least one invalid feature ID.");
+        }
+
+        data.features = features;
+      }
+
+      const updatedPlan: ISubscriptionPlan | null | undefined = await this.repository.editSubscriptionPlan(id, data);
+      if (!updatedPlan) {
+        return getNotFoundResponse("Subscription plan with id " + id + " doesn't exist.");
+      }
+
+      return getSuccessResponse(updatedPlan);
+    }
+    catch (error: any) {
+      return getInternalServerErrorResponse(error);
+    }
+  }
+
   /**
    * Validate Duplication
    * =====================
@@ -87,6 +117,22 @@ class SubscriptionPlanService extends Service {
     }
     catch (error: any) {
       return getInternalServerErrorResponse(error);
+    }
+  }
+
+  private async _getFeaturesByIds(featureIds: number[]): Promise<IFeature[]> {
+    try {
+      const filter = {
+        _id: {
+          $in: featureIds
+        }
+      };
+      
+      const features: IFeature[] = await this.featureRepository.getMultipleFeatures(filter);
+      return features;
+    }
+    catch (error: any) {
+      throw error;
     }
   }
 }

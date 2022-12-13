@@ -7,7 +7,7 @@ export interface IFeature extends Document {
 
 export interface ISubscriptionPlan extends Document {
   _id: number;
-  name: string;
-  featureIds: number[];
-  features: IFeature[];
+  name?: string;
+  featureIds?: number[];
+  features?: IFeature[];
 }

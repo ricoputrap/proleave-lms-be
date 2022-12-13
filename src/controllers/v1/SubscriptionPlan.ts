@@ -1,8 +1,9 @@
 import { Request, Response, Router } from "express";
 import SubscriptionPlanService from "../../services/SubscriptionPlanService";
 import { ReturnType } from "../../types/api.types";
+import { ISubscriptionPlan } from "../../types/models.types";
 import { getBadRequestResponse } from "../../utils/responseConstructor";
-import { isArrayNumeric, isUniqueNumbers } from "../../utils/typeChecker";
+import { isArrayNumeric, isNumeric, isUniqueNumbers } from "../../utils/typeChecker";
 
 const SubscriptionPlan = (): Router => {
   const router = Router();
@@ -39,6 +40,48 @@ const SubscriptionPlan = (): Router => {
     }
 
     const result: ReturnType = await service.addNewSubscriptionPlan(name, featureIds);
+    return res.status(result.code).json(result);
+  });
+
+  // EDIT SUBSCRIPTION PLAN
+  router.patch("/:id", async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { name, featureIds } = req.body;
+
+    // validate if the id is a number
+    if (!isNumeric(id)) {
+      const message: string = id + " is not a number. The subscription plan ID must be a number.";
+      const result: ReturnType = getBadRequestResponse(message);
+      return res.status(result.code).json(result);
+    }
+
+    // validate the required data
+    if (!name && !featureIds) {
+      const message = "The updated `name` OR `featureIds` should be provided.";
+      const result: ReturnType = getBadRequestResponse(message);
+      return res.status(result.code).json(result);
+    }
+
+    // validate if all feature IDs are numbers (if any)
+    if (!isArrayNumeric(featureIds)) {
+      const message = "There is at least one feature ID that is not a number.";
+      const result: ReturnType = getBadRequestResponse(message);
+      return res.status(result.code).json(result); 
+    }
+
+    // validate if all IDs are unique
+    if (!isUniqueNumbers(featureIds)) {
+      const message = "There are duplicate IDs.";
+      const result: ReturnType = getBadRequestResponse(message);
+      return res.status(result.code).json(result);
+    }
+
+    const _id: number = parseInt(id);
+    const updatedValue: ISubscriptionPlan = {
+      ...req.body,
+      _id
+    }
+    const result: ReturnType = await service.editSubscriptionPlan(_id, updatedValue);
     return res.status(result.code).json(result);
   });
 
