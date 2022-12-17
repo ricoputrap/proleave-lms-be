@@ -85,6 +85,22 @@ const SubscriptionPlan = (): Router => {
     return res.status(result.code).json(result);
   });
 
+  // DELETE SUBSCRIPTION PLAN
+  router.delete("/:id", async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    // validate if the id is a number
+    if (!isNumeric(id)) {
+      const message: string = id + " is not a number. The subscription plan ID must be a number.";
+      const result: ReturnType = getBadRequestResponse(message);
+      return res.status(result.code).json(result);
+    }
+
+    const idNumber: number = parseInt(req.params.id);
+    const result: ReturnType = await service.deleteSubscriptionPlan(idNumber);
+    return res.status(result.code).json(result);
+  })
+
   return router;
 }
 

@@ -1,6 +1,6 @@
 import FeatureRepository from "../repository/FeatureRepository";
 import SubscriptionPlanRepository from "../repository/SubscriptionPlanRepository";
-import { ReturnType } from "../types/api.types";
+import { DeleteReturnType, ReturnType } from "../types/api.types";
 import { IFeature, ISubscriptionPlan } from "../types/models.types";
 import { getBadRequestResponse, getInternalServerErrorResponse, getNotFoundResponse, getSuccessResponse } from "../utils/responseConstructor";
 import Service from "./Service";
@@ -82,6 +82,24 @@ class SubscriptionPlanService extends Service {
       }
 
       return getSuccessResponse(updatedPlan);
+    }
+    catch (error: any) {
+      return getInternalServerErrorResponse(error);
+    }
+  }
+
+  deleteSubscriptionPlan = async (id: number): Promise<ReturnType> => {
+    try {
+      const res: DeleteReturnType = await this.repository.deleteSubscriptionPlan(id);
+
+      // subscription plan doesn't exist
+      if (!res.deletedCount || res.deletedCount == 0) {
+        const errorMessage = `A subscription plan with ID '${id}' doesn't exist.`;
+        const result: ReturnType = getNotFoundResponse(errorMessage);
+        return result;
+      }
+
+      return getSuccessResponse();
     }
     catch (error: any) {
       return getInternalServerErrorResponse(error);

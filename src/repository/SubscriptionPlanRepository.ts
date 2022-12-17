@@ -1,4 +1,5 @@
 import SubscriptionPlanModel from "../models/SubscriptionPlanModel";
+import { DeleteReturnType } from "../types/api.types";
 import { IFeature, ISubscriptionPlan } from "../types/models.types";
 import { stringToHash } from "../utils/hashing";
 
@@ -62,6 +63,19 @@ class SubscriptionPlanRepository {
     catch (error: any) {
       const message = (error as Error).message;
       console.error("editSubscriptionPlan - message:", message);
+      throw message;
+    }
+  }
+
+  deleteSubscriptionPlan = async (_id: number):  Promise<DeleteReturnType> => {
+    try {
+      const filter = { _id };
+      const res: DeleteReturnType = await SubscriptionPlanModel.deleteOne(filter);
+      return res;
+    }
+    catch (error: any) {
+      const message = (error as Error).message;
+      console.error("deleteSubscriptionPlan - message:", message);
       throw message;
     }
   }
