@@ -29,6 +29,18 @@ class FeatureRepository {
     }
   }
 
+  getMultipleFeatures = async (filter: any): Promise<IFeature[]> => {
+    try {
+      const features: IFeature[] = await FeatureModel.find(filter);
+      return features;
+    }
+    catch (error: any) {
+      const message = (error as Error).message;
+      console.error("getSingleFeature - message:", message);
+      throw message;
+    }
+  }
+
   addNewFeature = async (name: string): Promise<IFeature> => {
     try {
       const _id: number = stringToHash(name);
