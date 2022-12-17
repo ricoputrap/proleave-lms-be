@@ -14,7 +14,7 @@ const {
 const request: SuperTest<Test> = supertest(HOST);
 
 describe("Features API", () => {
-  it("GET - Get Users", () => {
+  it("GET - Get All Features", () => {
     return request
       .get("/v1/features")
       .expect(200)
@@ -38,4 +38,27 @@ describe("Features API", () => {
         });
       })
   });
+
+  it("POST - Add New Feature - success", () => {
+    const now: number = new Date().getTime();
+    const data = { name: `Feature ${now}` };
+
+    return request
+      .post("/v1/features")
+      .send(data)
+      .then(res => {
+        // the response is not empty
+        expect(res.body).toBeDefined();
+
+        // validate the response success flag & status code
+        expect(res.body.success).toBe(true);
+        expect(res.body.code).toBe(OK);
+        expect(res.statusCode).toBe(OK);
+
+        // validate the data structure of the new feature object in `data`
+        expect(res.body.data.name).toStrictEqual(data.name);
+        expect(res.body.data._id).toBeDefined();
+        expect(typeof res.body.data._id).toBe("number");
+      });
+  })
 });
