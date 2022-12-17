@@ -1,5 +1,5 @@
 import { SuperTest, Test } from "supertest";
-import { STATUS_CODES } from "../../constants/api.enum";
+import { STATUS_CODES } from "../../../constants/api.enum";
 
 const runPostTests = (request: SuperTest<Test>) => {
   postBasic(request);
