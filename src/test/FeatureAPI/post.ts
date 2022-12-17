@@ -6,28 +6,44 @@ const runPostTests = (request: SuperTest<Test>) => {
 }
 
 const postBasic = (request: SuperTest<Test>) => {
-  it("POST - Add New Feature - success", () => {
-    const now: number = new Date().getTime();
-    const data = { name: `Feature ${now}` };
+  const body = { name: "Feature POST BASIC" };
+  let newFeatureID: number = -1;
 
-    return request
-      .post("/v1/features")
-      .send(data)
-      .then(res => {
-        // the response is not empty
-        expect(res.body).toBeDefined();
-
-        // validate the response success flag & status code
-        expect(res.body.success).toBe(true);
-        expect(res.body.code).toBe(STATUS_CODES.OK);
-        expect(res.statusCode).toBe(STATUS_CODES.OK);
-
-        // validate the data structure of the new feature object in `data`
-        expect(res.body.data.name).toStrictEqual(data.name);
-        expect(res.body.data._id).toBeDefined();
-        expect(typeof res.body.data._id).toBe("number");
-      });
+  describe("POST - Add New Feature - BASIC", () => {
+    it("Add new feature with basic setup should be success.", () => {
+      return request
+        .post("/v1/features")
+        .send(body)
+        .then(res => {
+          // the response is not empty
+          expect(res.body).toBeDefined();
+  
+          // validate the response success flag & status code
+          expect(res.body.success).toBe(true);
+          expect(res.body.code).toBe(STATUS_CODES.OK);
+          expect(res.statusCode).toBe(STATUS_CODES.OK);
+  
+          // validate the data structure of the new feature object in `data`
+          const data = res.body.data;
+          expect(data.name).toStrictEqual(body.name);
+          expect(data._id).toBeDefined();
+          expect(typeof data._id).toBe("number");
+  
+          newFeatureID = data._id;
+        });
+    });
+  
+    // delete the newly created feature in DB
+    afterEach(() => {
+      if (newFeatureID !== -1) {
+        return request.delete(`/v1/features/${newFeatureID}`);
+      }
+    });
   })
 }
+
+// const postWithoutName = (request: SuperTest<Test>) => {
+
+// }
 
 export default runPostTests;
