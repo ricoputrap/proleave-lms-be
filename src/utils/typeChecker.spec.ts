@@ -1,7 +1,7 @@
 import { isNumeric } from "./typeChecker";
 
 describe("UTILS - typeChecker.ts", () => {
-  it("Function: isNumeric", () => {
+  test("Function: isNumeric", () => {
     expect(isNumeric(1)).toBe(true);
     expect(isNumeric(1)).toBe(true);
     expect(isNumeric("1393029")).toBe(true);

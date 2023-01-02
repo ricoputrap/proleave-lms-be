@@ -2,8 +2,8 @@ import { SuperTest, Test } from "supertest";
 import { STATUS_CODES } from "../../../constants/api.enum";
 
 const addWithoutName = (request: SuperTest<Test>) => {
-  describe("POST - Add New Feature - WITHOUT NAME", () => {
-    it("Add a new feature without a request body should be failed.", () => {
+  describe("Add New Feature - WITHOUT NAME", () => {
+    test("Add a new feature without a request body should be failed.", () => {
       return request
         .post("/v1/features")
         .then(res => {
@@ -21,7 +21,7 @@ const addWithoutName = (request: SuperTest<Test>) => {
         })
     })
 
-    it("Add a new feature without a name in the request body should be failed.", () => {
+    test("Add a new feature without a name in the request body should be failed.", () => {
       const body = {};
 
       return request
@@ -42,7 +42,7 @@ const addWithoutName = (request: SuperTest<Test>) => {
         })
     })
 
-    it("Add a new feature with an empty name should be failed.", () => {
+    test("Add a new feature with an empty name should be failed.", () => {
       const body = { name: "" };
 
       return request

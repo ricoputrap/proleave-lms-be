@@ -1,5 +1,6 @@
 import { SuperTest, Test } from "supertest";
 import { STATUS_CODES } from "../../../constants/api.enum";
+import { IFeature } from "../../../types/models.types";
 
 const addBasic = (request: SuperTest<Test>) => {
   const newData = {
@@ -7,8 +8,8 @@ const addBasic = (request: SuperTest<Test>) => {
   };
   let newFeatureID: number = -1;
 
-  describe("POST - Add New Feature - BASIC", () => {
-    it("Add new feature with basic setup should be success.", () => {
+  describe("Add New Feature - BASIC", () => {
+    test("Add new feature with basic setup should be success.", () => {
       return request
         .post("/v1/features")
         .send(newData)
@@ -32,10 +33,28 @@ const addBasic = (request: SuperTest<Test>) => {
         });
     });
   
-    // delete the newly created feature in DB
-    afterEach(() => {
+    afterAll(async () => {
       if (newFeatureID !== -1) {
-        return request.delete(`/v1/features/${newFeatureID}`);
+        const PATH = `/v1/features/${newFeatureID}`;
+
+        // validate if the new feature exists and correct
+        const res = await request.get(PATH);
+        
+        // the response is not empty
+        expect(res.body).toBeDefined();
+  
+        // validate the response success flag & status code
+        expect(res.body.success).toBe(true);
+        expect(res.body.code).toBe(STATUS_CODES.OK);
+        expect(res.statusCode).toBe(STATUS_CODES.OK);
+
+        // validate the data structure of the new feature object in `data`
+        const feature: IFeature = res.body.data;
+        expect(feature._id).toBe(newFeatureID);
+        expect(feature.name).toBe(newData.name);
+        
+        // delete the newly created feature in DB
+        return request.delete(PATH);
       }
     });
   })
