@@ -1,7 +1,7 @@
 import { SuperTest, Test } from "supertest";
 import { STATUS_CODES } from "../../../constants/api.enum";
 
-const postBasic = (request: SuperTest<Test>) => {
+const addBasic = (request: SuperTest<Test>) => {
   const body = { name: "Feature POST BASIC" };
   let newFeatureID: number = -1;
 
@@ -38,4 +38,4 @@ const postBasic = (request: SuperTest<Test>) => {
   })
 }
 
-export default postBasic;
+export default addBasic;

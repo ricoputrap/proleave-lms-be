@@ -1,7 +1,7 @@
 import { SuperTest, Test } from "supertest";
 import { STATUS_CODES } from "../../../constants/api.enum";
 
-const postWithoutName = (request: SuperTest<Test>) => {
+const addWithoutName = (request: SuperTest<Test>) => {
   describe("POST - Add New Feature - WITHOUT NAME", () => {
     it("Add a new feature without a request body should be failed.", () => {
       return request
@@ -65,4 +65,4 @@ const postWithoutName = (request: SuperTest<Test>) => {
   })
 }
 
-export default postWithoutName;
+export default addWithoutName;
