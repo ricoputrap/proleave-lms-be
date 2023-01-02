@@ -14,6 +14,21 @@ const Feature = () => {
     return res.status(result.code).json(result);
   });
 
+  router.get("/:id", async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    // validate if the id is a number
+    if (!isNumeric(id)) {
+      const message: string = id + " is not a number. The feature ID must be a number.";
+      const result: ReturnType = getBadRequestResponse(message);
+      return res.status(result.code).json(result);
+    }
+
+    const idNumber = parseInt(req.params.id);
+    const result = await service.getSingleFeatureByID(idNumber);
+    return res.status(result.code).json(result);
+  })
+
   // ADD NEW FEATURE
   router.post("/", async (req: Request, res: Response) => {
     const { name } = req.body;

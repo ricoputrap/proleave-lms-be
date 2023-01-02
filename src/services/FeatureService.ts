@@ -23,6 +23,22 @@ class FeatureService extends Service {
     }
   }
 
+  getSingleFeatureByID = async (_id: number): Promise<ReturnType> => {
+    try {
+      const filter = { _id };
+      const feature: IFeature | null = await this.repository.getSingleFeature(filter);
+      
+      if (!feature) {
+        return getNotFoundResponse("Feature with id " + _id + " doesn't exist");
+      }
+      
+      return getSuccessResponse(feature); 
+    }
+    catch (error: any) {
+      return getInternalServerErrorResponse(error);
+    }
+  }
+
   addNewFeature = async (name: string): Promise<ReturnType> => {
     try {
       // validate duplication
