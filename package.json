@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon ./src/index.ts",
     "test": "jest",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "test:detect": "jest --detectOpenHandles"
   },
   "author": "Rico Putra P (rico.putra@gmail.com)",
   "license": "ISC",

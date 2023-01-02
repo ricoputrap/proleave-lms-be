@@ -3,6 +3,7 @@ import { ReturnType } from "../types/api.types";
 
 const {
   OK,
+  CREATED,
   BAD_REQUEST,
   UNAUTHORIZED,
   NOT_FOUND,
@@ -17,7 +18,7 @@ const {
  * @returns a json response object
  */
 export const responseConstructor = (code: number, error?: string | any, data?: any): ReturnType => {
-  let result: ReturnType = { success: true, code: OK };
+  let result: ReturnType = { success: true, code };
 
   // ERROR
   if (!!error) {
@@ -40,6 +41,12 @@ export const getSuccessResponse = (data?: any) => responseConstructor(
   "",
   data
 ) 
+
+export const getCreatedResponse = (data?: any) => responseConstructor(
+  CREATED,
+  "",
+  data
+);
 
 /**
  * Construct a json response object for a BAD REQUEST error

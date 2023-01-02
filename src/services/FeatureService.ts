@@ -1,7 +1,7 @@
 import FeatureRepository from "../repository/FeatureRepository";
 import { DeleteReturnType, ReturnType } from "../types/api.types";
 import { IFeature } from "../types/models.types";
-import { getBadRequestResponse, getInternalServerErrorResponse, getNotFoundResponse, getSuccessResponse } from "../utils/responseConstructor";
+import { getBadRequestResponse, getCreatedResponse, getInternalServerErrorResponse, getNotFoundResponse, getSuccessResponse } from "../utils/responseConstructor";
 import Service from "./Service";
 
 class FeatureService extends Service {
@@ -31,7 +31,7 @@ class FeatureService extends Service {
         return duplicationCheck;
 
       const feature: IFeature = await this.repository.addNewFeature(name);
-      const result: ReturnType = getSuccessResponse(feature);
+      const result: ReturnType = getCreatedResponse(feature);
       return result;
     }
     catch (error: any) {
